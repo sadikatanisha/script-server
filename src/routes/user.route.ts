@@ -1,6 +1,5 @@
 import { Router } from "express";
 import {
-  createOrder,
   getActiveCoupon,
   getAllProducts,
   getFeturedProducts,
@@ -17,7 +16,6 @@ router.get("/products", getAllProducts);
 router.get("/products/:id", getProductDetails);
 router.get("/products/:slug", getProductDetailsBySlug);
 router.get("/featured-products", getFeturedProducts);
-router.post("/create-order", createOrder);
 router.get("/active-coupon", getActiveCoupon);
 
 export default router;

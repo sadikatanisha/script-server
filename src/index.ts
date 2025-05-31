@@ -7,6 +7,7 @@ import connectDB from "./config/db";
 import authRouter from "./routes/auth.route";
 import adminRouter from "./routes/admin.route";
 import userRouter from "./routes/user.route";
+import paymentRouter from "./routes/payment.route";
 
 dotenv.config();
 const app: Express = express();
@@ -30,6 +31,7 @@ app.get("/", (req: Request, res: Response) => {
 app.use("/api/auth", authRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/user", userRouter);
+app.use("/api/payment", paymentRouter);
 
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);

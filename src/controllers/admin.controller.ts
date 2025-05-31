@@ -411,10 +411,6 @@ export const getBanner = async (
 ): Promise<void> => {
   try {
     const banners = await Banner.find();
-    if (!banners || banners.length === 0) {
-      res.status(404).json({ message: "No banners found" });
-      return;
-    }
     res.status(200).json(banners);
   } catch (error) {
     console.error("Error fetching banners:", error);
@@ -467,10 +463,6 @@ export const getAllOrders = async (
 ): Promise<void> => {
   try {
     const orders = await Order.find();
-    if (!orders || orders.length === 0) {
-      res.status(404).json({ message: "No Order found" });
-      return;
-    }
     res.status(200).json(orders);
   } catch (error) {
     console.error("Error fetching Orders:", error);

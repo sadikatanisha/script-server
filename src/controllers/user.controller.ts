@@ -114,10 +114,6 @@ export const getFeturedProducts = async (
   }
 };
 
-// @desc    Place Order
-// @route   POST /api/user/create-order/
-// @access  Public
-
 export const createOrder = async (
   req: Request,
   res: Response,

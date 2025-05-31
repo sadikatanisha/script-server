@@ -1,6 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface IOrder extends Document {
+  _id: mongoose.Types.ObjectId;
   firstName: string;
   lastName: string;
   contactNo: string;
@@ -14,14 +15,18 @@ export interface IOrder extends Document {
     quantity: number;
     price: number;
   }[];
-  deliveryCharge: number;
+
   totalAmount: number;
-  paymentMethod: "COD" | "Online";
+  // STRIPE
+  stripeSessionId?: string;
+  paymentIntentId?: string;
+  paymentStatus?: "unpaid" | "paid" | "failed";
+
   status: "Pending" | "Processing" | "Shipped" | "Delivered" | "Cancelled";
   createdAt: Date;
 }
 
-const OrderSchema: Schema = new Schema<IOrder>(
+const OrderSchema: Schema<IOrder> = new Schema(
   {
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
@@ -38,18 +43,24 @@ const OrderSchema: Schema = new Schema<IOrder>(
         price: { type: Number, required: true },
       },
     ],
-    deliveryCharge: { type: Number, required: true },
+
     totalAmount: { type: Number, required: true },
-    paymentMethod: {
-      type: String,
-      enum: ["COD", "Online"],
-      default: "COD",
-    },
+
     status: {
       type: String,
       enum: ["Pending", "Processing", "Shipped", "Delivered", "Cancelled"],
       default: "Pending",
     },
+
+    // Stripe metadata
+    stripeSessionId: { type: String },
+    paymentIntentId: { type: String },
+    paymentStatus: {
+      type: String,
+      enum: ["unpaid", "paid", "failed"],
+      default: "unpaid",
+    },
+
     createdAt: { type: Date, default: Date.now },
   },
   { versionKey: false }
