@@ -1,7 +1,8 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document, Types } from "mongoose";
 
 export interface IOrder extends Document {
   _id: mongoose.Types.ObjectId;
+  user?: Types.ObjectId;
   firstName: string;
   lastName: string;
   contactNo: string;
@@ -28,6 +29,10 @@ export interface IOrder extends Document {
 
 const OrderSchema: Schema<IOrder> = new Schema(
   {
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
     contactNo: { type: String, required: true },
@@ -43,16 +48,12 @@ const OrderSchema: Schema<IOrder> = new Schema(
         price: { type: Number, required: true },
       },
     ],
-
     totalAmount: { type: Number, required: true },
-
     status: {
       type: String,
       enum: ["Pending", "Processing", "Shipped", "Delivered", "Cancelled"],
       default: "Pending",
     },
-
-    // Stripe metadata
     stripeSessionId: { type: String },
     paymentIntentId: { type: String },
     paymentStatus: {
@@ -60,7 +61,6 @@ const OrderSchema: Schema<IOrder> = new Schema(
       enum: ["unpaid", "paid", "failed"],
       default: "unpaid",
     },
-
     createdAt: { type: Date, default: Date.now },
   },
   { versionKey: false }

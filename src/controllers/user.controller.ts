@@ -193,3 +193,34 @@ export const getActiveCoupon = async (
     res.status(500).json({ message: "Failed to get active coupon." });
   }
 };
+
+export const getOrderHistory = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    // 1. Ensure authMiddleware has attached req.user
+    if (!req.user) {
+      res
+        .status(401)
+        .json({ message: "Unauthorized: no user found on request" });
+      return;
+    }
+
+    const userId = req.user._id;
+
+    const orders = await Order.find({ user: userId })
+      .sort({ createdAt: -1 })
+      .populate({
+        path: "items.productId",
+        select: "name price images",
+      })
+      .exec();
+
+    res.status(200).json({ orders });
+  } catch (err) {
+    console.error("Error getting order history", err);
+    res.status(500).json({ message: "Failed to get order history" });
+  }
+};
