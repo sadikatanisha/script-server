@@ -79,6 +79,8 @@ export const saveOrder = async (req: Request, res: Response): Promise<void> => {
       items,
       totalAmount,
       paymentIntentId,
+      couponCode,
+      discount,
     } = req.body;
 
     if (
@@ -122,6 +124,8 @@ export const saveOrder = async (req: Request, res: Response): Promise<void> => {
       paymentIntentId: pi.id,
       paymentStatus: "paid",
       status: "Processing",
+      couponCode: couponCode || undefined, // store coupon if used
+      discount: discount || 0, // store discount amount
     } as IOrder);
 
     // 4️⃣ Save and respond

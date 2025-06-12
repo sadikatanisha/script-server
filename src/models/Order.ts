@@ -1,14 +1,17 @@
+// src/models/Order.ts
 import mongoose, { Schema, Document, Types } from "mongoose";
 
 export interface IOrder extends Document {
   _id: mongoose.Types.ObjectId;
   user?: Types.ObjectId;
+
   firstName: string;
   lastName: string;
   contactNo: string;
   address: string;
   apartmentNo?: string;
   city: string;
+
   items: {
     productId: string;
     size?: string;
@@ -18,7 +21,12 @@ export interface IOrder extends Document {
   }[];
 
   totalAmount: number;
-  // STRIPE
+
+  // Coupon fields
+  couponCode?: string;
+  discount?: number;
+
+  // Stripe fields
   stripeSessionId?: string;
   paymentIntentId?: string;
   paymentStatus?: "unpaid" | "paid" | "failed";
@@ -39,6 +47,7 @@ const OrderSchema: Schema<IOrder> = new Schema(
     address: { type: String, required: true },
     apartmentNo: { type: String },
     city: { type: String, required: true },
+
     items: [
       {
         productId: { type: String, ref: "Product", required: true },
@@ -48,12 +57,14 @@ const OrderSchema: Schema<IOrder> = new Schema(
         price: { type: Number, required: true },
       },
     ],
+
     totalAmount: { type: Number, required: true },
-    status: {
-      type: String,
-      enum: ["Pending", "Processing", "Shipped", "Delivered", "Cancelled"],
-      default: "Pending",
-    },
+
+    // New coupon fields
+    couponCode: { type: String },
+    discount: { type: Number, default: 0 },
+
+    // Stripe
     stripeSessionId: { type: String },
     paymentIntentId: { type: String },
     paymentStatus: {
@@ -61,6 +72,13 @@ const OrderSchema: Schema<IOrder> = new Schema(
       enum: ["unpaid", "paid", "failed"],
       default: "unpaid",
     },
+
+    status: {
+      type: String,
+      enum: ["Pending", "Processing", "Shipped", "Delivered", "Cancelled"],
+      default: "Pending",
+    },
+
     createdAt: { type: Date, default: Date.now },
   },
   { versionKey: false }
